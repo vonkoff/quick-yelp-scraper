@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id                Int             @id @default(autoincrement())
+  name              String
+  webpage           String?         @unique
+  phone             String?
+  email             String?
+  street            String
+  category          Categories      @relation(fields: [categoryId], references: [id])
+  categoryId        Int // relation scalar field  (used in the `@relation` attribute above)
+  state             States          @relation(fields: [stateId], references: [id])
+  stateId           Int // relation scalar field  (used in the `@relation` attribute above)
+  postalCode        PostalCode      @relation(fields: [postalCodeId], references: [id])
+  postalCodeId      Int // relation scalar field  (used in the `@relation` attribute above)
+  AddressLocality   AddressLocality @relation(fields: [addressLocalityId], references: [id])
+  addressLocalityId Int
+
+  @@unique([name, stateId])
+}
+
+model Categories {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  companies Company[]
+}
+
+model States {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  companies Company[]
+}
+
+model PostalCode {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  companies Company[]
+}
+
+model AddressLocality {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  companies Company[]
+}
